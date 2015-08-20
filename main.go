@@ -10,7 +10,7 @@ var hostname,user,password string
 func main() {
 	cfg, errCfg := LoadConfig("./config")
 	if errCfg != nil{
-		fmt.Println(errCfg.Error())
+		fmt.Println("error:can't read config file")
 		os.Exit(1)
 	}
 
@@ -18,21 +18,21 @@ func main() {
 	for _, host := range cfg.Hosts.Host{
 		exec, errHost := NewExecutor(host.Hostname, host.User, host.Password, PORT_SSH_DEFAULT)
 		if errHost != nil{
-			fmt.Println(errHost.Error())
+			fmt.Println("error:can't connect to host " + host.Hostname)
 			os.Exit(1)
 		}
 		executors[host.Hostname] = exec
 	}
 	
 	for _, command := range cfg.Commands.Command{
-		execs, errExec := filterCommandHostname(command.Hostname, executors)
-		if errExec != nil {
-			fmt.Println(errExec)
-			os.Exit(1)
-		}
-		for _, exec := range execs {
+		if command.Hostname == "*"{	
+			for _, exec := range executors {
+				runCommand(exec, command.Line)
+			}	
+		} else {
+			exec := executors[command.Hostname]
 			runCommand(exec, command.Line)
-		}	
+		}
 	}	
 }
 
