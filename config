@@ -1,7 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<SSHConfig>
-     
-  <!-- hosts definition section -->
+ <!-- hosts definition section -->
   <Hosts>
     <Host>
       <Hostname>H1</Hostname>

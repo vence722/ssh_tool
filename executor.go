@@ -11,6 +11,18 @@ import (
 
 const PORT_SSH_DEFAULT = 22
 
+var (
+	ErrHostUsername error = errors.New("error:Hostname or user can not be empty.")
+)
+
+type ErrConnect struct{
+	hostname string
+}
+
+func (this *ErrConnect) Error() string{
+	return "error:Can't connect to host " + this.hostname
+}
+
 type Result struct {
 	Message string
 	Error  error
@@ -97,8 +109,13 @@ func (this *SSHExecutor) disconnect() error {
 
 func NewExecutor(hostname, user, password string, port int) (*SSHExecutor, error) {
 	if hostname == "" || user == "" {
-		return nil, errors.New("error:hostname or user can not be empty")
+		return nil, ErrHostUsername
 	}
 	exec := &SSHExecutor{Hostname: hostname, Port: port, User: user, Password: password}
+	testErr := exec.connect()
+	defer exec.disconnect()
+	if testErr != nil{
+		return nil, &ErrConnect{hostname:hostname}
+	}
 	return exec, nil
 }
