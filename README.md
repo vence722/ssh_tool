@@ -1,6 +1,6 @@
 # SSH TOOL
 
-A tool that helps you to use SSH on multiple machines in one time. 
+A tool that helps you to use SSH on multiple machines at one time. 
 
 # Introduction
 
