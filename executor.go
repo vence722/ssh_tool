@@ -2,30 +2,31 @@ package main
 
 import (
 	"errors"
-	"golang.org/x/crypto/ssh"
-	"golang.org/x/crypto/ssh/agent"
-	"net"
 	"os"
-	"strconv"
+	"strings"
+	"time"
+
+	"github.com/appleboy/easyssh-proxy"
 )
 
 const PORT_SSH_DEFAULT = 22
 
 var (
-	ErrHostUsername error = errors.New("error:Hostname or user can not be empty.")
+	ErrHostUsername error = errors.New("error: Hostname or user can not be empty.")
 )
 
-type ErrConnect struct{
+type ErrConnect struct {
 	hostname string
+	reason   error
 }
 
-func (this *ErrConnect) Error() string{
-	return "error:Can't connect to host " + this.hostname
+func (this *ErrConnect) Error() string {
+	return "error: Can't connect to host " + this.hostname + ", reason: " + this.reason.Error()
 }
 
 type Result struct {
 	Message string
-	Error  error
+	Error   error
 }
 
 type SSHExecutor struct {
@@ -34,7 +35,7 @@ type SSHExecutor struct {
 	User     string
 	Password string
 	Commands []string
-	Session  *ssh.Session
+	Session  *easyssh.MakeConfig
 }
 
 func (this *SSHExecutor) SetCommands(commands []string) {
@@ -50,59 +51,35 @@ func (this *SSHExecutor) Exec() *Result {
 		return result
 	}
 
-	commands := ""
-	for _, command := range this.Commands {
-		commands += (command + "\n")
+	commands := strings.Join(this.Commands, ";")
+
+	stdout, stderr, _, err1 := this.Session.Run(commands)
+	if err1 != nil || stderr != "" {
+		result.Error = errors.New(stderr)
+	} else if stdout != "" {
+		result.Message = stdout
 	}
-	
-	output, err1 := this.Session.Output(commands)
-	if err1 != nil {
-		result.Error = err1
-	} else if len(output) > 0 {
-		result.Message = string(output)
-	}
-	
+
 	this.disconnect()
 	return result
 }
 
 func (this *SSHExecutor) connect() error {
-	// auths holds the detected ssh auth methods
-	auths := []ssh.AuthMethod{}
-
-	// figure out what auths are requested, what is supported
-	if this.Password != "" {
-		auths = append(auths, ssh.Password(this.Password))
+	homeDir, _ := os.UserHomeDir()
+	this.Session = &easyssh.MakeConfig{
+		User:     this.User,
+		Server:   this.Hostname,
+		Password: this.Password,
+		KeyPath:  homeDir + "/.ssh/id_rsa",
+		Port:     "22",
+		Timeout:  60 * time.Second,
 	}
-
-	if sshAgent, err := net.Dial("unix", os.Getenv("SSH_AUTH_SOCK")); err == nil {
-		auths = append(auths, ssh.PublicKeysCallback(agent.NewClient(sshAgent).Signers))
-		defer sshAgent.Close()
-	}
-
-	config := &ssh.ClientConfig{
-		User: this.User,
-		Auth: auths,
-	}
-
-	client, err := ssh.Dial("tcp", this.Hostname+":"+strconv.Itoa(this.Port), config)
-	if err != nil {
-		return err
-	}
-
-	session, err := client.NewSession()
-	if err != nil {
-		return err
-	}
-
-	this.Session = session
-
 	return nil
 }
 
 func (this *SSHExecutor) disconnect() error {
 	if this.Session != nil {
-		return this.Session.Close()
+		this.Session = nil
 	}
 	return nil
 }
@@ -114,8 +91,8 @@ func NewExecutor(hostname, user, password string, port int) (*SSHExecutor, error
 	exec := &SSHExecutor{Hostname: hostname, Port: port, User: user, Password: password}
 	testErr := exec.connect()
 	defer exec.disconnect()
-	if testErr != nil{
-		return nil, &ErrConnect{hostname:hostname}
+	if testErr != nil {
+		return nil, &ErrConnect{hostname: hostname, reason: testErr}
 	}
 	return exec, nil
 }

@@ -5,26 +5,30 @@ import (
 	"os"
 )
 
-var hostname,user,password string
-
 func main() {
-	cfg, errCfg := LoadConfig("./config")
-	if errCfg != nil{
+	configPath := "./config"
+
+	if len(os.Args) > 1 {
+		configPath = os.Args[1]
+	}
+
+	cfg, errCfg := LoadConfig(configPath)
+	if errCfg != nil {
 		fmt.Println(errCfg.Error())
 		os.Exit(1)
 	}
 
 	var executors map[string]*SSHExecutor = make(map[string]*SSHExecutor)
-	for _, host := range cfg.Hosts.Host{
+	for _, host := range cfg.Hosts.Host {
 		exec, errHost := NewExecutor(host.Hostname, host.User, host.Password, PORT_SSH_DEFAULT)
-		if errHost != nil{
+		if errHost != nil {
 			fmt.Println(errHost.Error())
 			os.Exit(1)
 		}
 		executors[host.Hostname] = exec
 	}
-	
-	for _, command := range cfg.Commands.Command{
+
+	for _, command := range cfg.Commands.Command {
 		execs, errExec := filterCommandHostname(command.Hostname, executors)
 		if errExec != nil {
 			fmt.Println(errExec)
@@ -32,11 +36,11 @@ func main() {
 		}
 		for _, exec := range execs {
 			runCommand(exec, command.Line)
-		}	
-	}	
+		}
+	}
 }
 
-func runCommand(exec *SSHExecutor, commandLines []string){
+func runCommand(exec *SSHExecutor, commandLines []string) {
 	exec.SetCommands(commandLines)
 	result := exec.Exec()
 	if result.Error != nil {
@@ -46,5 +50,3 @@ func runCommand(exec *SSHExecutor, commandLines []string){
 		fmt.Println(result.Message)
 	}
 }
-
-
