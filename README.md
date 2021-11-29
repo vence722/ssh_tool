@@ -19,51 +19,51 @@ Configuration file example:
 	<?xml version="1.0" encoding="UTF-8"?>
 	<SSHConfig>
       
-	  <!-- hosts definition section -->
-	  <Hosts>
-	    <Host>
-	      <Hostname>H1</Hostname>
-	      <User>USERNAME_FOR_H1</User>
-	      <Password>PASSWORD_FOR_H1</Password>
-	    </Host>
+		<!-- hosts definition section -->
+		<Hosts>
+			<Host>
+				<Hostname>H1</Hostname>
+				<User>USERNAME_FOR_H1</User>
+				<Password>PASSWORD_FOR_H1</Password>
+			</Host>
 		<Host>
-	      <Hostname>H2</Hostname>
-	      <User>USERNAME_FOR_H2</User>
-	      <Password>PASSWORD_FOR_H2</Password>
-	    </Host>
+			<Hostname>H2</Hostname>
+			<User>USERNAME_FOR_H2</User>
+			<Password>PASSWORD_FOR_H2</Password>
+		</Host>
 		<Host>
-	      <Hostname>H3</Hostname>
-	      <User>USERNAME_FOR_H3</User>
-	      <Password>PASSWORD_FOR_H3</Password>
-	    </Host>
+			<Hostname>H3</Hostname>
+			<User>USERNAME_FOR_H3</User>
+			<Password>PASSWORD_FOR_H3</Password>
+		</Host>
 		<Host>
-	      <Hostname>H4</Hostname>
-	      <User>USERNAME_FOR_H4</User>
-	      <Password>PASSWORD_FOR_H4</Password>
-	    </Host>
-	  </Hosts>
+			<Hostname>H4</Hostname>
+			<User>USERNAME_FOR_H4</User>
+			<Password>PASSWORD_FOR_H4</Password>
+		</Host>
+		</Hosts>
 	
-	  <!-- commands definition section -->
-	  <Commands>
-	    <!-- commands for single host -->
-	    <Command>
-	      <Hostname>H1</Hostname>
-	      <Line>cd /etc/</Line>
-	      <Line>ls -l</Line>
-	    </Command>
-		<!-- commands for multiple hosts -->
-		<Command>
-		  <Hostname>H2,H3</Hostname>
-		  <Line>cd /tmp/</Line>
-		  <Line>mkdir test</Line>
-		  <Line>ls -l</Line>
-		</Command>
-		<!-- commands for all hosts -->
-		<Command>
-		  <Hostname>*</Hostname>
-		  <Line>echo "Access to the host via SSH!"</Line>
-		</Command>
-	  </Commands>
+		<!-- commands definition section -->
+		<Commands>
+			<!-- commands for single host -->
+			<Command>
+				<Hostname>H1</Hostname>
+				<Line>cd /etc/</Line>
+				<Line>ls -l</Line>
+			</Command>
+			<!-- commands for multiple hosts -->
+			<Command>
+				<Hostname>H2,H3</Hostname>
+				<Line>cd /tmp/</Line>
+				<Line>mkdir test</Line>
+				<Line>ls -l</Line>
+			</Command>
+			<!-- commands for all hosts -->
+			<Command>
+				<Hostname>*</Hostname>
+				<Line>echo "Access to the host via SSH!"</Line>
+			</Command>
+		</Commands>
 	
 	</SSHConfig> 
 	
