@@ -26,21 +26,21 @@ Configuration file example:
 				<User>USERNAME_FOR_H1</User>
 				<Password>PASSWORD_FOR_H1</Password>
 			</Host>
-		<Host>
-			<Hostname>H2</Hostname>
-			<User>USERNAME_FOR_H2</User>
-			<Password>PASSWORD_FOR_H2</Password>
-		</Host>
-		<Host>
-			<Hostname>H3</Hostname>
-			<User>USERNAME_FOR_H3</User>
-			<Password>PASSWORD_FOR_H3</Password>
-		</Host>
-		<Host>
-			<Hostname>H4</Hostname>
-			<User>USERNAME_FOR_H4</User>
-			<Password>PASSWORD_FOR_H4</Password>
-		</Host>
+			<Host>
+				<Hostname>H2</Hostname>
+				<User>USERNAME_FOR_H2</User>
+				<Password>PASSWORD_FOR_H2</Password>
+			</Host>
+			<Host>
+				<Hostname>H3</Hostname>
+				<User>USERNAME_FOR_H3</User>
+				<Password>PASSWORD_FOR_H3</Password>
+			</Host>
+			<Host>
+				<Hostname>H4</Hostname>
+				<User>USERNAME_FOR_H4</User>
+				<Password>PASSWORD_FOR_H4</Password>
+			</Host>
 		</Hosts>
 	
 		<!-- commands definition section -->
