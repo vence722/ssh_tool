@@ -36,10 +36,11 @@ Configuration file example:
 				<User>USERNAME_FOR_H3</User>
 				<Password>PASSWORD_FOR_H3</Password>
 			</Host>
+			<!-- host allowing non-password login -->
 			<Host>
 				<Hostname>H4</Hostname>
 				<User>USERNAME_FOR_H4</User>
-				<Password>PASSWORD_FOR_H4</Password>
+				<Password></Password>
 			</Host>
 		</Hosts>
 	
